@@ -103,6 +103,7 @@
 		F9D15B822363496F0022D1D5 = {
 			isa = PBXGroup;
 			children = (
+				F9D15BD6236351F00022D1D5 /* Sources */,
 				F9D15B8E2363496F0022D1D5 /* RxNetwork */,
 				F9D15B99236349700022D1D5 /* RxNetworkTests */,
 				F9D15B8D2363496F0022D1D5 /* Products */,
@@ -123,10 +124,6 @@
 		F9D15B8E2363496F0022D1D5 /* RxNetwork */ = {
 			isa = PBXGroup;
 			children = (
-				F9D15BB423634A510022D1D5 /* Core */,
-				F9D15BB123634A510022D1D5 /* MonitorNetwork */,
-				F9D15BAE23634A510022D1D5 /* NetworkContext */,
-				F9D15BBC23634A510022D1D5 /* Session */,
 				F9D15B8F2363496F0022D1D5 /* RxNetwork.h */,
 				F9D15B902363496F0022D1D5 /* Info.plist */,
 			);
@@ -182,6 +179,17 @@
 				F9D15BBF23634A510022D1D5 /* Validation.swift */,
 			);
 			path = Session;
+			sourceTree = "<group>";
+		};
+		F9D15BD6236351F00022D1D5 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F9D15BB423634A510022D1D5 /* Core */,
+				F9D15BB123634A510022D1D5 /* MonitorNetwork */,
+				F9D15BAE23634A510022D1D5 /* NetworkContext */,
+				F9D15BBC23634A510022D1D5 /* Session */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
