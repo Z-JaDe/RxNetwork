@@ -25,6 +25,7 @@
 		F9D15BCB23634A510022D1D5 /* RxProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D15BBD23634A510022D1D5 /* RxProgress.swift */; };
 		F9D15BCC23634A510022D1D5 /* Session+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D15BBE23634A510022D1D5 /* Session+Rx.swift */; };
 		F9D15BCD23634A510022D1D5 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D15BBF23634A510022D1D5 /* Validation.swift */; };
+		F9D15BDC236352AF0022D1D5 /* RxNetwork.podspec in Resources */ = {isa = PBXBuildFile; fileRef = F9D15BDB236352AF0022D1D5 /* RxNetwork.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		F9D15BBD23634A510022D1D5 /* RxProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxProgress.swift; sourceTree = "<group>"; };
 		F9D15BBE23634A510022D1D5 /* Session+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Session+Rx.swift"; sourceTree = "<group>"; };
 		F9D15BBF23634A510022D1D5 /* Validation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validation.swift; sourceTree = "<group>"; };
+		F9D15BDB236352AF0022D1D5 /* RxNetwork.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RxNetwork.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 		F9D15B822363496F0022D1D5 = {
 			isa = PBXGroup;
 			children = (
+				F9D15BDB236352AF0022D1D5 /* RxNetwork.podspec */,
 				F9D15BD6236351F00022D1D5 /* Sources */,
 				F9D15B8E2363496F0022D1D5 /* RxNetwork */,
 				F9D15B99236349700022D1D5 /* RxNetworkTests */,
@@ -285,6 +288,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9D15BDC236352AF0022D1D5 /* RxNetwork.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +498,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = RxNetwork/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -518,6 +523,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = RxNetwork/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
