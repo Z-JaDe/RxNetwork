@@ -29,14 +29,18 @@ public struct KeyPathDecodableResponseSerializer<T: Decodable>: ResponseSerializ
     }
 
     public func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> T {
-        var data = data
-        if let keyPath = keyPath {
-            let jsonData = try jsonSerializer.serialize(request: request, response: response, data: data, error: error)
-            guard let jsonObject = (jsonData as? NSDictionary)?.value(forKeyPath: keyPath) else {
-                throw NetworkError.objectMapping("没有keyPath: \(keyPath)")
+        do {
+            var data = data
+            if let keyPath = keyPath {
+                let jsonData = try jsonSerializer.serialize(request: request, response: response, data: data, error: error)
+                guard let jsonObject = (jsonData as? NSDictionary)?.value(forKeyPath: keyPath) else {
+                    throw NetworkError.objectMapping("没有keyPath: \(keyPath)")
+                }
+                data = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
             }
-            data = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+            return try decodeSerializer.serialize(request: request, response: response, data: data, error: error)
+        } catch let error {
+            throw NetworkError.jsonMapping(error)
         }
-        return try decodeSerializer.serialize(request: request, response: response, data: data, error: error)
     }
 }
