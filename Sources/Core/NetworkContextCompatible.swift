@@ -28,14 +28,7 @@ extension RNDownloadResponse: RNResponseCompatible {
     //    public let fileURL: URL?
     //    public let resumeData: Data?
 }
-//// MARK: - 扩展
-extension RNResponseCompatible {
-    /// ZJaDe: 接口path
-    public var urlPath: String {
-        guard let url = request?.url else { return "未知" }
-        return url.path.isEmpty ? url.absoluteString : url.path
-    }
-}
+
 extension Result where Failure == NetworkError {
     func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> Result<NewSuccess, Failure> {
         switch self {
