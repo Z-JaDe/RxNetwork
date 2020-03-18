@@ -9,23 +9,25 @@
 import Foundation
 import Alamofire
 
-public struct KeyPathDecodableResponseSerializer<T: Decodable>: ResponseSerializer {
+public final class KeyPathDecodableResponseSerializer<T: Decodable>: ResponseSerializer {
     public let dataPreprocessor: DataPreprocessor
+    public let decoder: DataDecoder
     public let emptyResponseCodes: Set<Int>
     public let emptyRequestMethods: Set<HTTPMethod>
     public let keyPath: String?
-    let jsonSerializer: JSONResponseSerializer
-    let decodeSerializer: DecodableResponseSerializer<T>
+
+    lazy var jsonSerializer: JSONResponseSerializer = JSONResponseSerializer(dataPreprocessor: dataPreprocessor, emptyResponseCodes: emptyResponseCodes, emptyRequestMethods: emptyRequestMethods)
+    lazy var decodeSerializer: DecodableResponseSerializer<T> = DecodableResponseSerializer<T>(dataPreprocessor: dataPreprocessor, decoder: decoder, emptyResponseCodes: emptyResponseCodes, emptyRequestMethods: emptyRequestMethods)
     public init(dataPreprocessor: DataPreprocessor = JSONResponseSerializer.defaultDataPreprocessor,
+                decoder: DataDecoder = JSONDecoder(),
                 emptyResponseCodes: Set<Int> = JSONResponseSerializer.defaultEmptyResponseCodes,
                 emptyRequestMethods: Set<HTTPMethod> = JSONResponseSerializer.defaultEmptyRequestMethods,
                 atKeyPath keyPath: String?) {
         self.dataPreprocessor = dataPreprocessor
+        self.decoder = decoder
         self.emptyResponseCodes = emptyResponseCodes
         self.emptyRequestMethods = emptyRequestMethods
         self.keyPath = keyPath
-        self.jsonSerializer = JSONResponseSerializer(dataPreprocessor: dataPreprocessor, emptyResponseCodes: emptyResponseCodes, emptyRequestMethods: emptyRequestMethods)
-        self.decodeSerializer = DecodableResponseSerializer<T>(dataPreprocessor: dataPreprocessor, emptyResponseCodes: emptyResponseCodes, emptyRequestMethods: emptyRequestMethods)
     }
 
     public func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> T {

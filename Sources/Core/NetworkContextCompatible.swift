@@ -9,53 +9,44 @@
 import Foundation
 import Alamofire
 
-public protocol NetworkContextCompatible {}
+public typealias RNDataResponse<V> = AFDataResponse<V>
+public typealias RNDownloadResponse<V> = AFDownloadResponse<V>
 
-public typealias DataResponseContext<V> = ResponseContext<AFDataResponse<V>>
-public typealias DownloadResponseContext<V> = ResponseContext<AFDownloadResponse<V>>
-
-public protocol RequestContextCompatible: NetworkContextCompatible {
-    associatedtype R: Request
-    var request: R { get }
-    func map(_ transform: (R) -> R) -> Self
+public protocol RNResponseCompatible {
+    associatedtype Success
+    associatedtype Failure: Error
+    var request: URLRequest? {get}
+    var response: HTTPURLResponse? {get}
+    var metrics: URLSessionTaskMetrics? {get}
+    var serializationDuration: TimeInterval {get}
+    var result: Swift.Result<Success, Failure> {get}
 }
-extension RequestContextCompatible {
-    public var target: URLRequestConvertible? {
-        switch request {
-        case let request as UploadRequest:
-            return request.convertible
-        case let request as DataRequest:
-            return request.convertible
-        case let request as DownloadRequest:
-            if case .request(let target) = request.downloadable {
-                return target
+extension DataResponse: RNResponseCompatible {
+    //    var data: Data? {get}
+}
+extension RNDownloadResponse: RNResponseCompatible {
+    //    public let fileURL: URL?
+    //    public let resumeData: Data?
+}
+//// MARK: - 扩展
+extension RNResponseCompatible {
+    /// ZJaDe: 接口path
+    public var urlPath: String {
+        guard let url = request?.url else { return "未知" }
+        return url.path.isEmpty ? url.absoluteString : url.path
+    }
+}
+extension Result where Failure == NetworkError {
+    func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> Result<NewSuccess, Failure> {
+        switch self {
+        case let .success(value):
+            do {
+                return try .success(transform(value))
+            } catch {
+                return .failure(NetworkError.unknown(error))
             }
-            return nil
-        default:
-            return nil
+        case let .failure(error):
+            return .failure(error)
         }
-    }
-}
-extension RequestContextCompatible where R: DataRequest {
-    public func mapResponse<T>(_ transform: (R) -> AFDataResponse<T>) -> DataResponseContext<T> {
-        ResponseContext(transform(request), self.target)
-    }
-}
-extension RequestContextCompatible where R: DownloadRequest {
-    public func mapResponse<T>(_ transform: (R) -> AFDownloadResponse<T>) -> DownloadResponseContext<T> {
-        ResponseContext(transform(request), self.target)
-    }
-}
-
-public protocol ResponseContextCompatible: NetworkContextCompatible {
-    associatedtype R: Response
-    typealias Result = R.Result
-    typealias Value = R.Value
-    var response: R { get }
-    func map<T>(_ transform: (R) -> T) -> ResponseContext<T>
-}
-extension ResponseContextCompatible {
-    public var result: Result {
-        return response.result
     }
 }
