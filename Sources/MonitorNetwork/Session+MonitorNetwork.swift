@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 import RxSwift
-extension Session {
+extension Reactive where Base: Session {
     public func checkNetwork<T>(_ value: T) -> Observable<T> {
         self.monitorNetwork().map({ (hasNetwork) -> T in
             if hasNetwork {
