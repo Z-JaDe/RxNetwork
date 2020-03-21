@@ -10,7 +10,8 @@ import Foundation
 import Alamofire
 import RxSwift
 extension Reactive where Base: Session {
-    public func checkNetwork<T>(_ value: T) -> Observable<T> {
+    /// 无网时 继续监听 有网时直接返回
+    public func monitorNetwork<T>(_ value: T) -> Observable<T> {
         self.monitorNetwork().map({ (hasNetwork) -> T in
             if hasNetwork {
                 return value
@@ -19,6 +20,7 @@ extension Reactive where Base: Session {
             }
         })
     }
+    /// 无网时 继续监听 有网时直接返回
     private func monitorNetwork() -> Observable<Bool> {
         Observable.create({ (observer) -> Disposable in
             let monitorNetwork = MonitorNetwork.shared

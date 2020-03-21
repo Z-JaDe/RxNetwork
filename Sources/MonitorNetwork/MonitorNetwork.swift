@@ -18,10 +18,11 @@ public class MonitorNetwork {
     public let networkChanged: ReplaySubject<NetworkReachabilityManager.NetworkReachabilityStatus> = ReplaySubject.create(bufferSize: 1)
     public private(set) var isListening: Bool = false
     private var manager: NetworkReachabilityManager?
+    public var isReachable: Bool? {
+        manager?.isReachable
+    }
     public func startListening(host: String) {
-        guard let manager = NetworkReachabilityManager() else {
-            return
-        }
+        guard let manager = NetworkReachabilityManager() else { return }
         self.manager = manager
         isListening = true
         manager.startListening {[weak self] (status) in
@@ -39,9 +40,12 @@ public class MonitorNetwork {
 //            }
         }
     }
-    /// ZJaDe: 监听这个信号 true时有网络 false没有网络
+    /// ZJaDe: 监听这个信号 true时有网络 false没有网络 无监听情况下认为有网
     public func hasNetwork() -> Observable<Bool> {
         self.networkChanged.map { (status) -> Bool in
+            guard self.isListening else {
+                return true // 无监听情况下认为有网
+            }
             switch status {
             case .notReachable, .unknown:
                 return false

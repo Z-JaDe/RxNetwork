@@ -67,19 +67,31 @@ extension Reactive where Base: Session {
     /**
      订阅时发送一个信号 启动数据流
      后面接收到数据后自己根据情况控制信号结束
-     不在这里控制信号的结束是因为有些接口可能会重新请求，重新请求使用的是Alamofire的逻辑
+     不在这里控制信号的结束是 防止请求提前结束
      */
     private func getRequest<R: Request>(_ createRequest: @escaping (Session) -> R) -> Observable<R> {
         Observable<R>.create { observer -> Disposable in
             let session = self.base
             let request = createRequest(session)
             observer.onNext(request)
-            if !session.startRequestsImmediately {
-                request.resume()
-            }
             return Disposables.create {
                 request.cancel()
             }
         }
+    }
+}
+// MARK: -
+public extension Reactive where Base: Session {
+    @inline(__always)
+    func request<T: TargetTypeConvertible>(_ token: T) -> Observable<DataRequest> {
+        request(token.asTargetType())
+    }
+    @inline(__always)
+    func upload<T: TargetTypeConvertible>(multipartFormData: @escaping (MultipartFormData) -> Void, _ token: T) -> Observable<UploadRequest> {
+        upload(multipartFormData: multipartFormData, with: token.asTargetType())
+    }
+    @inline(__always)
+    func download<T: TargetTypeConvertible>(_ token: T) -> Observable<DownloadRequest> {
+        download(token.asTargetType())
     }
 }

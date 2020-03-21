@@ -30,10 +30,18 @@ extension TargetType {
         return url
     }
     public func asURLRequest() throws -> URLRequest {
+        try _asURLRequest()
+    }
+    public func _asURLRequest() throws -> URLRequest {
         let url = self._asURL()
         var urlRequest: URLRequest
         urlRequest = try URLRequest(url: url, method: self.method, headers: self.headers)
         urlRequest = try self.encoding.encode(urlRequest, with: self.parameters)
         return urlRequest
     }
+}
+// MARK: -
+public protocol TargetTypeConvertible {
+    associatedtype StructType: TargetType
+    func asTargetType() -> StructType
 }
