@@ -13,6 +13,7 @@ public enum NetworkError: Swift.Error {
     case unknown(Swift.Error)
     case error(String)
     case ignore
+    case noData
     case statusCode(Int)
     case noNetwork
     case timeout
@@ -76,6 +77,12 @@ extension NetworkError: LocalizedError {
             #endif
         case .ignore:
             return ""
+        case .noData:
+            #if DEBUG || Beta || POD_CONFIGURATION_BETA
+            return "没返回数据就结束了？"
+            #else
+            return "请求失败"
+            #endif
         case .statusCode(let statusCode):
             #if DEBUG || Beta || POD_CONFIGURATION_BETA
             return "状态码错误: \(statusCode))"

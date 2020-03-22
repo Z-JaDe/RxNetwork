@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 import RxSwift
-extension Observable where Element: Request {
+extension ObservableType where Element: Request {
     public func redirect(using handler: RedirectHandler) -> Observable<Element> {
         map { $0.redirect(using: handler) }
     }
@@ -22,7 +22,4 @@ extension Observable where Element: Request {
     public func downloadProgress(queue: DispatchQueue = .main, closure: @escaping Element.ProgressHandler) -> Observable<Element> {
         map { $0.downloadProgress(queue: queue, closure: closure) }
     }
-}
-extension Request {
-    
 }

@@ -21,13 +21,23 @@ public protocol RNResponseCompatible {
     var serializationDuration: TimeInterval {get}
     var result: Swift.Result<Success, Failure> {get}
 }
-extension DataResponse: RNResponseCompatible {
-    //    var data: Data? {get}
+public protocol RNDataResponseCompatible: RNResponseCompatible {
+    var data: Data? {get}
+    func map<NewSuccess>(_ transform: (Success) -> NewSuccess) -> DataResponse<NewSuccess, Failure>
+    func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> DataResponse<NewSuccess, Error>
+    func mapError<NewFailure: Error>(_ transform: (Failure) -> NewFailure) -> DataResponse<Success, NewFailure>
+    func tryMapError<NewFailure: Error>(_ transform: (Failure) throws -> NewFailure) -> DataResponse<Success, Error>
 }
-extension RNDownloadResponse: RNResponseCompatible {
-    //    public let fileURL: URL?
-    //    public let resumeData: Data?
+public protocol RNDownloadResponseCompatible: RNResponseCompatible {
+    var fileURL: URL? {get}
+    var resumeData: Data? {get}
+    func map<NewSuccess>(_ transform: (Success) -> NewSuccess) -> DownloadResponse<NewSuccess, Failure>
+    func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> DownloadResponse<NewSuccess, Error>
+    func mapError<NewFailure: Error>(_ transform: (Failure) -> NewFailure) -> DownloadResponse<Success, NewFailure>
+    func tryMapError<NewFailure: Error>(_ transform: (Failure) throws -> NewFailure) -> DownloadResponse<Success, Error>
 }
+extension DataResponse: RNDataResponseCompatible {}
+extension DownloadResponse: RNDownloadResponseCompatible {}
 
 extension Result where Failure == NetworkError {
     func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> Result<NewSuccess, Failure> {

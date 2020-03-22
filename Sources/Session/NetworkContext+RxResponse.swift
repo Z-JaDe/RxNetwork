@@ -13,49 +13,44 @@ import RxSwift
 // MARK: - Response
 extension Request: ReactiveCompatible {}
 extension Reactive where Base: DataRequest {
-    public func response(queue: DispatchQueue = .main) -> Observable<RNDataResponse<Data?>> {
-        Observable.create { observer in
+    public func response(queue: DispatchQueue = .main) -> Single<RNDataResponse<Data?>> {
+        Single.create { observer in
             self.base.response(queue: queue, completionHandler: { (response) in
-                observer.onNext(response)
-                observer.onCompleted()
+                observer(.success(response))
             })
             return Disposables.create()
         }
     }
-    public func response<T: DataResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Observable<RNDataResponse<T.SerializedObject>> {
-        Observable.create { observer in
+    public func response<T: DataResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Single<RNDataResponse<T.SerializedObject>> {
+        Single.create { observer in
             self.base.response(queue: queue, responseSerializer: responseSerializer, completionHandler: { (response) in
-                observer.onNext(response)
-                observer.onCompleted()
+                observer(.success(response))
             })
             return Disposables.create()
         }
     }
 }
 extension Reactive where Base: DownloadRequest {
-    public func response(queue: DispatchQueue = .main) -> Observable<RNDownloadResponse<URL?>> {
-        Observable.create { observer in
+    public func response(queue: DispatchQueue = .main) -> Single<RNDownloadResponse<URL?>> {
+        Single.create { observer in
             self.base.response(queue: queue, completionHandler: { (response) in
-                observer.onNext(response)
-                observer.onCompleted()
+                observer(.success(response))
             })
             return Disposables.create()
         }
     }
-    public func response<T: DownloadResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Observable<RNDownloadResponse<T.SerializedObject>> {
-        Observable.create { observer in
+    public func response<T: DownloadResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Single<RNDownloadResponse<T.SerializedObject>> {
+        Single.create { observer in
             self.base.response(queue: queue, responseSerializer: responseSerializer, completionHandler: { (response) in
-                observer.onNext(response)
-                observer.onCompleted()
+                observer(.success(response))
             })
             return Disposables.create()
         }
     }
-    public func cancel() -> Observable<Data?> {
-        Observable.create { observer in
+    public func cancel() -> Single<Data?> {
+        Single.create { observer in
             self.base.cancel { (resumeData) in
-                observer.onNext(resumeData)
-                observer.onCompleted()
+                observer(.success(resumeData))
             }
             return Disposables.create()
         }
@@ -65,26 +60,26 @@ extension Reactive where Base: DownloadRequest {
 extension ObservableType where Element: Request {
     @inline(__always)
     private func flatMapNetwork<Source: ObservableConvertibleType>(_ selector: @escaping (Element) -> Source)
-        -> Observable<Source.Element> {
-            flatMapLatest(selector).take(1)
+        -> Single<Source.Element> {
+            flatMapLatest(selector).take(1).asSingle()
     }
 }
 extension ObservableType where Element: DataRequest {
-    public func response(queue: DispatchQueue = .main) -> Observable<RNDataResponse<Data?>> {
+    public func response(queue: DispatchQueue = .main) -> Single<RNDataResponse<Data?>> {
         flatMapNetwork { $0.rx.response(queue: queue) }
     }
-    public func response<T: DataResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Observable<RNDataResponse<T.SerializedObject>> {
+    public func response<T: DataResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Single<RNDataResponse<T.SerializedObject>> {
         flatMapNetwork { $0.rx.response(queue: queue, responseSerializer: responseSerializer) }
     }
 }
 extension ObservableType where Element: DownloadRequest {
-    public func response(queue: DispatchQueue = .main) -> Observable<RNDownloadResponse<URL?>> {
+    public func response(queue: DispatchQueue = .main) -> Single<RNDownloadResponse<URL?>> {
         flatMapNetwork { $0.rx.response(queue: queue) }
     }
-    public func response<T: DownloadResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Observable<RNDownloadResponse<T.SerializedObject>> {
+    public func response<T: DownloadResponseSerializerProtocol>(queue: DispatchQueue = .main, responseSerializer: T) -> Single<RNDownloadResponse<T.SerializedObject>> {
         flatMapNetwork { $0.rx.response(queue: queue, responseSerializer: responseSerializer) }
     }
-    public func cancel() -> Observable<Data?> {
+    public func cancel() -> Single<Data?> {
         flatMapNetwork { $0.rx.cancel() }
     }
 }
@@ -93,41 +88,41 @@ let dataResponseSerializer = DataResponseSerializer()
 
 extension Reactive where Base: DataRequest {
     @inline(__always)
-    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Observable<RNDataResponse<T>> {
+    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDataResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
     @inline(__always)
-    public func responseData(queue: DispatchQueue = .main) -> Observable<RNDataResponse<Data>> {
+    public func responseData(queue: DispatchQueue = .main) -> Single<RNDataResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
 }
 extension Reactive where Base: DownloadRequest {
     @inline(__always)
-    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Observable<RNDownloadResponse<T>> {
+    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDownloadResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
     @inline(__always)
-    public func responseData(queue: DispatchQueue = .main) -> Observable<RNDownloadResponse<Data>> {
+    public func responseData(queue: DispatchQueue = .main) -> Single<RNDownloadResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
 }
 extension ObservableType where Element: DataRequest {
     @inline(__always)
-    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Observable<RNDataResponse<T>> {
+    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDataResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
     @inline(__always)
-    public func responseData(queue: DispatchQueue = .main) -> Observable<RNDataResponse<Data>> {
+    public func responseData(queue: DispatchQueue = .main) -> Single<RNDataResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
 }
 extension ObservableType where Element: DownloadRequest {
     @inline(__always)
-    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Observable<RNDownloadResponse<T>> {
+    public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDownloadResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
     @inline(__always)
-    public func responseData(queue: DispatchQueue = .main) -> Observable<RNDownloadResponse<Data>> {
+    public func responseData(queue: DispatchQueue = .main) -> Single<RNDownloadResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
 }
