@@ -10,37 +10,29 @@ import Foundation
 import RxSwift
 import Alamofire
 extension ObservableType where Element: DataRequest {
-    @inline(__always)
     public func validate<S: Sequence>(statusCode: S) -> Observable<Element> where S.Element == Int {
         map { $0.validate(statusCode: statusCode) }
     }
-    @inline(__always)
     public func validate() -> Observable<Element> {
         map { $0.validate() }
     }
-    @inline(__always)
     public func validate<S: Sequence>(contentType acceptableContentTypes: S) -> Observable<Element> where S.Iterator.Element == String {
         map { $0.validate(contentType: acceptableContentTypes) }
     }
-    @inline(__always)
     public func validate(_ validation: @escaping DataRequest.Validation) -> Observable<Element> {
         map { $0.validate(validation) }
     }
 }
 extension ObservableType where Element: DownloadRequest {
-    @inline(__always)
     public func validate<S: Sequence>(statusCode: S) -> Observable<Element> where S.Element == Int {
         map { $0.validate(statusCode: statusCode) }
     }
-    @inline(__always)
     public func validate() -> Observable<Element> {
         map { $0.validate() }
     }
-    @inline(__always)
     public func validate<S: Sequence>(contentType acceptableContentTypes: S) -> Observable<Element> where S.Iterator.Element == String {
         map { $0.validate(contentType: acceptableContentTypes) }
     }
-    @inline(__always)
     public func validate(_ validation: @escaping DownloadRequest.Validation) -> Observable<Element> {
         map { $0.validate(validation) }
     }

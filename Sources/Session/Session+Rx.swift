@@ -82,15 +82,12 @@ extension Reactive where Base: Session {
 }
 // MARK: -
 public extension Reactive where Base: Session {
-    @inline(__always)
     func request<T: TargetTypeConvertible>(_ token: T) -> Observable<DataRequest> {
         request(token.asTargetType())
     }
-    @inline(__always)
     func upload<T: TargetTypeConvertible>(multipartFormData: @escaping (MultipartFormData) -> Void, _ token: T) -> Observable<UploadRequest> {
         upload(multipartFormData: multipartFormData, with: token.asTargetType())
     }
-    @inline(__always)
     func download<T: TargetTypeConvertible>(_ token: T) -> Observable<DownloadRequest> {
         download(token.asTargetType())
     }

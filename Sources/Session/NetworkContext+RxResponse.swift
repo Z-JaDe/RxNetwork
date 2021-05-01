@@ -58,7 +58,6 @@ extension Reactive where Base: DownloadRequest {
 }
 // MARK: - Response
 extension ObservableType where Element: Request {
-    @inline(__always)
     private func flatMapNetwork<Source: ObservableConvertibleType>(_ selector: @escaping (Element) -> Source)
         -> Single<Source.Element> {
             flatMapLatest(selector).take(1).asSingle()
@@ -87,41 +86,33 @@ extension ObservableType where Element: DownloadRequest {
 let dataResponseSerializer = DataResponseSerializer()
 
 extension Reactive where Base: DataRequest {
-    @inline(__always)
     public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDataResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
-    @inline(__always)
     public func responseData(queue: DispatchQueue = .main) -> Single<RNDataResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
 }
 extension Reactive where Base: DownloadRequest {
-    @inline(__always)
     public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDownloadResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
-    @inline(__always)
     public func responseData(queue: DispatchQueue = .main) -> Single<RNDownloadResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
 }
 extension ObservableType where Element: DataRequest {
-    @inline(__always)
     public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDataResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
-    @inline(__always)
     public func responseData(queue: DispatchQueue = .main) -> Single<RNDataResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
 }
 extension ObservableType where Element: DownloadRequest {
-    @inline(__always)
     public func responseMap<T: Decodable>(type: T.Type, atKeyPath keyPath: String? = nil) -> Single<RNDownloadResponse<T>> {
         response(queue: .main, responseSerializer: KeyPathDecodableResponseSerializer<T>(atKeyPath: keyPath))
     }
-    @inline(__always)
     public func responseData(queue: DispatchQueue = .main) -> Single<RNDownloadResponse<Data>> {
         response(queue: queue, responseSerializer: dataResponseSerializer)
     }
